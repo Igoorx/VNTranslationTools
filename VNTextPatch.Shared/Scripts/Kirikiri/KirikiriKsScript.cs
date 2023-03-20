@@ -82,9 +82,14 @@ namespace VNTextPatch.Shared.Scripts.Kirikiri
                     {
                         if (currentRange.Length > 0)
                             yield return currentRange;
-
                         currentRange = range;
                     }
+                }
+
+                if (currentRange.Length > 0)
+                {
+                    yield return currentRange;
+                    currentRange = new Range(0, 0, ScriptStringType.Message);
                 }
             }
             if (currentRange.Length > 0)
@@ -104,8 +109,10 @@ namespace VNTextPatch.Shared.Scripts.Kirikiri
             if (trimmedLine.StartsWith("*"))
                 return GetLabelRanges(lineOffset, line);
 
-            if (trimmedLine.StartsWith("#"))
+            if (trimmedLine.StartsWith("【") && trimmedLine.EndsWith("】"))
                 return GetNameRanges(lineOffset, line);
+            //if (trimmedLine.StartsWith("#"))
+            //    return GetNameRanges(lineOffset, line);
 
             return GetMessageRanges(lineOffset, line);
         }
@@ -137,7 +144,7 @@ namespace VNTextPatch.Shared.Scripts.Kirikiri
 
         private IEnumerable<Range> GetNameRanges(int lineOffset, string line)
         {
-            yield return new Range(lineOffset + 1, line.Length - 1, ScriptStringType.CharacterName);
+            yield return new Range(lineOffset + 1, line.Length - 2, ScriptStringType.CharacterName);
         }
 
         private IEnumerable<Range> GetMessageRanges(int lineOffset, string line)
@@ -152,6 +159,14 @@ namespace VNTextPatch.Shared.Scripts.Kirikiri
                 int segmentEnd = commandMatch.Index;
                 if (segmentEnd > segmentStart)
                     yield return new Range(lineOffset + segmentStart, segmentEnd - segmentStart, _currentStringType);
+
+                #if V0
+                if (commandName.Contains(",") && ((line.StartsWith("「") && line.EndsWith("」")) || (!line.StartsWith("[") && !line.EndsWith("]"))))
+                    yield return new Range(lineOffset + commandMatch.Groups["command"].Index, commandName.IndexOf(','), ScriptStringType.Message);
+                #else
+                if (commandName.Contains(",") && ((line.StartsWith("「") && line.EndsWith("」")) || (!line.StartsWith("[") && !line.EndsWith("]"))))
+                    yield return new Range(lineOffset + commandMatch.Groups["command"].Index, commandName.IndexOf(','), ScriptStringType.InlineName);
+                #endif
 
                 if (commandName.StartsWith("【") && commandName.EndsWith("】"))
                     yield return new Range(lineOffset + commandMatch.Groups["command"].Index + 1, commandName.Length - 2, ScriptStringType.CharacterName);

@@ -41,13 +41,14 @@ namespace VNTextPatch.Shared.Scripts
         {
             List<Entry> entries = new List<Entry>();
             Entry pendingEntry = null;
+            int i = 0;
             foreach (ScriptString str in strings)
             {
                 if (str.Type == ScriptStringType.CharacterName)
                 {
                     if (pendingEntry == null)
                     {
-                        pendingEntry = new Entry { Name = str.Text };
+                        pendingEntry = new Entry { Index = i++, Name = str.Text };
                     }
                     else
                     {
@@ -69,7 +70,7 @@ namespace VNTextPatch.Shared.Scripts
                     }
                     else
                     {
-                        entries.Add(new Entry { Message = str.Text });
+                        entries.Add(new Entry { Index = i++, Message = str.Text });
                     }
                 }
             }
@@ -82,6 +83,13 @@ namespace VNTextPatch.Shared.Scripts
 
         private class Entry
         {
+            [JsonProperty("index", NullValueHandling = NullValueHandling.Ignore)]
+            public int Index
+            {
+                get;
+                set;
+            }
+
             [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
             public string Name
             {
