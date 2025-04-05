@@ -29,7 +29,7 @@ namespace VNTextPatch.Shared.Scripts
             foreach (Range range in GetRanges(_script))
             {
                 string text = GetTextForRead(range);
-                yield return new ScriptString(text, range.Type);
+                yield return new ScriptString(text, range.Type, range.Offset);
             }
         }
 

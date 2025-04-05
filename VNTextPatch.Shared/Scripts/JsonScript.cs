@@ -48,7 +48,7 @@ namespace VNTextPatch.Shared.Scripts
                 {
                     if (pendingEntry == null)
                     {
-                        pendingEntry = new Entry { Index = i++, Name = str.Text };
+                        pendingEntry = new Entry { Offset = str.Offset, Name = str.Text };
                     }
                     else
                     {
@@ -70,7 +70,7 @@ namespace VNTextPatch.Shared.Scripts
                     }
                     else
                     {
-                        entries.Add(new Entry { Index = i++, Message = str.Text });
+                        entries.Add(new Entry {  Offset = str.Offset, Message = str.Text });
                     }
                 }
             }
@@ -83,8 +83,8 @@ namespace VNTextPatch.Shared.Scripts
 
         private class Entry
         {
-            [JsonProperty("index", NullValueHandling = NullValueHandling.Ignore)]
-            public int Index
+            [JsonProperty("offset")]
+            public int Offset
             {
                 get;
                 set;

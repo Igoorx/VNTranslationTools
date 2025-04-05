@@ -160,13 +160,11 @@ namespace VNTextPatch.Shared.Scripts.Kirikiri
                 if (segmentEnd > segmentStart)
                     yield return new Range(lineOffset + segmentStart, segmentEnd - segmentStart, _currentStringType);
 
-                #if V0
-                if (commandName.Contains(",") && ((line.StartsWith("「") && line.EndsWith("」")) || (!line.StartsWith("[") && !line.EndsWith("]"))))
-                    yield return new Range(lineOffset + commandMatch.Groups["command"].Index, commandName.IndexOf(','), ScriptStringType.Message);
-                #else
-                if (commandName.Contains(",") && ((line.StartsWith("「") && line.EndsWith("」")) || (!line.StartsWith("[") && !line.EndsWith("]"))))
-                    yield return new Range(lineOffset + commandMatch.Groups["command"].Index, commandName.IndexOf(','), ScriptStringType.InlineName);
-                #endif
+                if (commandName == "――")
+                    yield return new Range(lineOffset + commandMatch.Groups["command"].Index-1, commandName.Length+2, ScriptStringType.Message);
+
+                if (commandName.Contains(",") && ((line.StartsWith("「") && line.EndsWith("」")) || (!line.StartsWith("[") || !line.EndsWith("]"))))
+                    yield return new Range(lineOffset + commandMatch.Groups["command"].Index-1, commandName.Length+2, ScriptStringType.Message);
 
                 if (commandName.StartsWith("【") && commandName.EndsWith("】"))
                     yield return new Range(lineOffset + commandMatch.Groups["command"].Index + 1, commandName.Length - 2, ScriptStringType.CharacterName);
