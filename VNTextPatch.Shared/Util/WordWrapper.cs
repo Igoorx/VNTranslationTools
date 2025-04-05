@@ -8,7 +8,7 @@ namespace VNTextPatch.Shared.Util
 {
     internal abstract class WordWrapper
     {
-        private static readonly char[] LineBreakChars = { ' ', '-' };
+        private static readonly char[] LineBreakChars = { ' ', '-', '\u3000' };
 
         public string Wrap(string text, Regex controlCodePattern = null, string lineBreak = "\r\n")
         {
@@ -28,7 +28,7 @@ namespace VNTextPatch.Shared.Util
                     result.Append(line, lineStartPos, lineEndPos - lineStartPos);
 
                     lineStartPos = lineEndPos;
-                    while (lineStartPos < line.Length && line[lineStartPos] == ' ')
+                    while (lineStartPos < line.Length && (line[lineStartPos] == ' ' || line[lineStartPos] == '\u3000'))
                     {
                         lineStartPos++;
                     }
@@ -86,7 +86,7 @@ namespace VNTextPatch.Shared.Util
                     int searchPos = text.IndexOfAny(LineBreakChars, lineEndPos + 1);
                     if (searchPos >= 0)
                     {
-                        if (text[searchPos] != ' ')
+                        if ((text[searchPos] != ' ' && text[searchPos] != '\u3000'))
                             searchPos++;
                     }
                     else
@@ -119,7 +119,7 @@ namespace VNTextPatch.Shared.Util
                 yield return lineEndPos;
 
                 lineStartPos = lineEndPos;
-                while (lineStartPos < text.Length && text[lineStartPos] == ' ')
+                while (lineStartPos < text.Length && (text[lineStartPos] == ' ' || text[lineStartPos] == '\u3000'))
                 {
                     lineStartPos++;
                 }
