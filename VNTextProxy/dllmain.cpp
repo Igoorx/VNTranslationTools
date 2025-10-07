@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 
+#include "FH_VideoFix.hpp"
+
 void* OriginalEntryPoint;
 
 void Initialize();
@@ -36,6 +38,7 @@ void Initialize()
     D2DProportionalizer::Init();
 
     EnginePatches::Init();
+    VideoFix::Install();
 
     SetCurrentDirectoryW(Path::GetModuleFolderPath(nullptr).c_str());
 }
